@@ -1,0 +1,57 @@
+# MagicSquare — 세션 3 (.cursorrules 초안)
+
+## 프로젝트
+4×4 부분 마방진. 세션 3 범위: **10선 합 34 판정** (`validate_lines`)만.
+Solver · UI · BCE 전체 · 1~16 중복 검증은 이번 범위 밖.
+
+## 도메인
+- 격자: **4×4** 정수 `list[list[int]]`
+- 셀 값: **0**(빈칸) 또는 **1~16**
+- 마법상수: **34**
+- **10선** (줄 ID는 구현에서 통일):
+  - **R1~R4** — 행 0~3
+  - **C1~C4** — 열 0~3
+  - **D1** — 주대각 (`diag:main`)
+  - **D2** — 부대각 (`diag:anti`)
+- **R5**: 격자에 `0`이 하나라도 있으면 `status=incomplete`, 합 계산·34 비교 **생략**
+
+## API (Command — Control)
+```python
+validate_lines(grid) -> {
+    "status": "pass" | "fail" | "incomplete",
+    "failed_lines": [  # fail일 때만; 틀린 줄만
+        {"id": str, "sum": int, "expected": 34},
+        ...
+    ],
+}
+```
+- **pass**: 10선 모두 합 34, `failed_lines=[]`
+- **fail**: 하나 이상 합≠34, `failed_lines`에 해당 줄만
+- **incomplete**: `0` 포함, `failed_lines=[]`
+
+## ECB 패턴
+| 계층 | 세션 3 | 위치 |
+|------|--------|------|
+| **Entity** | 4×4 격자·줄 정의(데이터) | `src/` — 순수 계산·규칙 |
+| **Control** | `validate_lines`, R1~R5 판정 | `src/validate_lines.py` |
+| **Boundary** | dict 반환(API), pytest | `tests/` — 입·출력 계약 검증 |
+
+Entity/Control에 I/O·print·pytest import 금지. Boundary는 API 계약만 assert.
+
+## TDD
+- 사이클: **RED → GREEN → REFACTOR** (한 Phase씩)
+- **RED**: `tests/` **만** 수정 — 실패하는 테스트 추가
+- **GREEN**: `src/`만 수정 — 테스트 통과에 필요한 최소 코드
+- **REFACTOR**: 동작 유지, 중복 제거
+- 금지: assert 완화, `@pytest.mark.skip`, `xfail`, `pass` placeholder로 GREEN 우회
+- RED/GREEN/REFACTOR 시작 시 응답 **첫 줄**에 `Phase: RED` 등 선언
+
+## AI · Git
+- **한국어**로 설명·주석·커밋 메시지 초안
+- 범위 밖 기능(Solver, UI, 중복 검증) 제안·구현하지 않음
+- **`git commit` / push**: 사용자가 **명시 요청할 때만**
+
+## 실행
+```bash
+python -m pytest
+```

@@ -32,7 +32,7 @@ MagicSquare_xx STEP 1 — Mom Test 인터뷰를 진행해.
 - 페르소나: [...]
 - 진짜 문제 (한 문장): [...]
 - Mom Test 증거 3줄: [...]
-MagicSquare_1004 세션 3 워크북을 채워줘:
+MagicSquare 세션 3 워크북을 채워줘:
 1) 주제 한 문장 (Mom Test 기반, 솔루션 최소화)
 2) R-G-I-O (Role/Goal/Input/Output)
 3) 성공 기준 3개 (Mom Test 증거와 연결)
